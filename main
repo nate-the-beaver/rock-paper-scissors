@@ -1,0 +1,239 @@
+from PyQt5.QtWidgets import (QApplication, 
+                             QWidget, 
+                             QStackedWidget, 
+                             QLabel, 
+                             QVBoxLayout,
+                             QHBoxLayout, 
+                             QPushButton,)
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
+import sys
+import random
+
+class RPS(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # Main Window widgets
+        self.stack = QStackedWidget()
+        self.mainlayout = QVBoxLayout()
+
+        #Pages
+        self.mainpage = QWidget()
+        self.choicepage = QWidget()
+        self.revealpage = QWidget()
+
+        # Run code
+        self.initUI()
+        self.set_pages()
+        self.stack.setCurrentIndex(0)
+
+    def initUI(self):
+
+        # Main Window
+        self.setWindowTitle("Rock, Paper, Scissors!")
+        self.setWindowIcon(QIcon("RPS.png"))
+
+        # Stack set up
+        self.stack.addWidget(self.mainpage)
+        self.stack.addWidget(self.choicepage)
+        self.stack.addWidget(self.revealpage)
+
+        self.mainlayout = QVBoxLayout()
+        self.mainlayout.addWidget(self.stack)
+        self.setLayout(self.mainlayout)
+
+        # Main Page Widgets
+        self.mainpage_title = QLabel("It's time for...")
+        self.mainpage_rock = QLabel("ROCK 🪨")
+        self.mainpage_paper = QLabel("PAPER 📃")
+        self.mainpage_scissors = QLabel("SCISSORS ✂️")
+        self.mainpage_button = QPushButton("Let's Go!")
+
+        self.mainpage_title.setObjectName("mainpage_title")
+        self.mainpage_rock.setObjectName("mainpage_rock")
+        self.mainpage_paper.setObjectName("mainpage_paper")
+        self.mainpage_scissors.setObjectName("mainpage_scissors")
+        self.mainpage_button.setObjectName("mainpage_button")
+
+        # Choice Page Widgets
+        self.choicepage_title = QLabel("Choose your weapon!")
+        self.choicepage_rock = QPushButton("ROCK 🪨")
+        self.choicepage_paper = QPushButton("PAPER 📃")
+        self.choicepage_scissors = QPushButton("SCISSORS ✂️")
+        self.choicepage_playerscore = QLabel("Your Score - 0")
+        self.choicepage_comscore = QLabel("Computer Score - 0")
+
+        self.choicepage_title.setObjectName("choicepage_title")
+        self.choicepage_rock.setObjectName("choicepage_rock")
+        self.choicepage_paper.setObjectName("choicepage_paper")
+        self.choicepage_scissors.setObjectName("choicepage_scissors")
+        self.choicepage_playerscore.setObjectName("choicepage_playerscore")
+        self.choicepage_comscore.setObjectName("choicepage_comscore")
+
+        # Reveal Page Widgets
+        self.revealpage_title = QLabel("You Won!")
+        self.revealpage_playerchoicetitle = QLabel("You chose:")
+        self.revealpage_comchoicetitle = QLabel("Com chose:")
+        self.revealpage_playerchoice = QLabel("🪨")
+        self.revealpage_comchoice = QLabel("📃")
+        self.revealpage_button = QPushButton("Play Again?")
+
+        self.revealpage_title.setObjectName("revealpage_title")
+        self.revealpage_playerchoicetitle.setObjectName("revealpage_playerchoicetitle")
+        self.revealpage_comchoicetitle.setObjectName("revealpage_comchoicetitle")
+        self.revealpage_playerchoice.setObjectName("revealpage_playerchoice")
+        self.revealpage_comchoice.setObjectName("revealpage_comchoice")
+        self.revealpage_button.setObjectName("revealpage_button")
+
+        # Set Alignment
+        self.revealpage_title.setAlignment(Qt.AlignCenter)
+        self.revealpage_playerchoicetitle.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
+        self.revealpage_comchoicetitle.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
+        self.revealpage_playerchoice.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        self.revealpage_comchoice.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+
+        # Scores
+        self.playerscore = 0
+        self.comscore = 0
+
+        # Layouts
+        self.mainpage_layout = QVBoxLayout()
+        self.choicepage_layout = QVBoxLayout()
+        self.revealpage_layout = QVBoxLayout()
+
+        # Stylesheet
+        self.setStyleSheet("""
+
+            QLabel, QPushButton {
+                font-family: calibri;
+            }
+
+            QLabel#mainpage_title,
+            QLabel#choicepage_title,
+            QLabel#revealpage_playerchoicetitle,
+            QLabel#revealpage_comchoicetitle {
+                font-size: 40px;
+            }
+                                        
+            QLabel#mainpage_rock, 
+            QLabel#mainpage_paper, 
+            QLabel#mainpage_scissors,
+            QLabel#revealpage_playerchoice,
+            QLabel#revealpage_comchoice {
+                font-size: 90px;
+            }
+
+            QLabel#choicepage_playerscore,
+            QLabel#choicepage_comscore {
+                font-size: 20px;
+            }
+
+            QLabel#revealpage_title {
+                font-size: 110px;
+            }
+
+            QPushButton#choicepage_rock, 
+            QPushButton#choicepage_paper, 
+            QPushButton#choicepage_scissors {
+                font-size: 80px;
+            }      
+                                        
+            QPushButton#mainpage_button,
+            QPushButton#revealpage_button {
+                font-size: 25px;
+                font-weight: bold;        
+            }
+
+        """)
+
+    def set_pages(self):
+
+        # Main Page set up
+        self.mainpage_layout.addWidget(self.mainpage_title)
+        self.mainpage_layout.addWidget(self.mainpage_rock)
+        self.mainpage_layout.addWidget(self.mainpage_paper)
+        self.mainpage_layout.addWidget(self.mainpage_scissors)
+        self.mainpage_layout.addWidget(self.mainpage_button)
+
+        self.mainpage.setLayout(self.mainpage_layout)
+
+        # Choice Page set up
+        self.choicepage_layout.addWidget(self.choicepage_title)
+        self.choicepage_layout.addWidget(self.choicepage_rock)
+        self.choicepage_layout.addWidget(self.choicepage_paper)
+        self.choicepage_layout.addWidget(self.choicepage_scissors)
+        self.choicepage_layout.addWidget(self.choicepage_playerscore)
+        self.choicepage_layout.addWidget(self.choicepage_comscore)
+
+        self.choicepage.setLayout(self.choicepage_layout)
+
+        # Reveal Page set up
+        self.revealpagetitle_layout = QHBoxLayout()
+        self.revealpagechoice_layout = QHBoxLayout()
+
+        self.revealpagetitle_layout.addWidget(self.revealpage_playerchoicetitle)
+        self.revealpagetitle_layout.addWidget(self.revealpage_comchoicetitle)
+        self.revealpagechoice_layout.addWidget(self.revealpage_playerchoice)
+        self.revealpagechoice_layout.addWidget(self.revealpage_comchoice)
+
+        self.revealpage_layout.addWidget(self.revealpage_title)
+        self.revealpage_layout.addLayout(self.revealpagetitle_layout)
+        self.revealpage_layout.addLayout(self.revealpagechoice_layout)
+        self.revealpage_layout.addWidget(self.revealpage_button)
+
+        self.revealpage.setLayout(self.revealpage_layout)
+
+        # Button Connections
+        self.mainpage_button.clicked.connect(lambda: self.stack.setCurrentIndex(1))
+        self.choicepage_rock.clicked.connect(lambda: self.gamelogic(playerchoice="rock"))
+        self.choicepage_paper.clicked.connect(lambda: self.gamelogic(playerchoice="paper"))
+        self.choicepage_scissors.clicked.connect(lambda: self.gamelogic(playerchoice="scissors"))
+        self.revealpage_button.clicked.connect(lambda: self.stack.setCurrentIndex(1))
+
+
+    def gamelogic(self, playerchoice):
+
+        options = ["rock", "paper", "scissors"]
+        comchoice = random.choice(options)
+
+        # Decide if game is tie, win, or loss, and set text + add points
+        if playerchoice == comchoice:
+            self.revealpage_title.setText("It's a tie!")
+        elif (playerchoice, comchoice) in [("rock", "scissors"),
+                                        ("paper", "rock"),
+                                        ("scissors", "paper")]:
+            self.revealpage_title.setText("You Won!")
+            self.playerscore += 1
+        else:
+            self.revealpage_title.setText("You Lost")
+            self.comscore += 1
+
+        # Match the player and com choices to specific emojis
+        match playerchoice:
+            case "rock":
+                self.revealpage_playerchoice.setText("🪨")
+            case "paper":
+                self.revealpage_playerchoice.setText("📃")
+            case "scissors":
+                self.revealpage_playerchoice.setText("✂️")
+
+        match comchoice:
+            case "rock":
+                self.revealpage_comchoice.setText("🪨")
+            case "paper":
+                self.revealpage_comchoice.setText("📃")
+            case "scissors":
+                self.revealpage_comchoice.setText("✂️")
+
+        # Update score and go back to choice page
+        self.choicepage_playerscore.setText(f"Your Score - {self.playerscore}")
+        self.choicepage_comscore.setText(f"Computer Score - {self.comscore}")
+        self.stack.setCurrentIndex(2)
+
+# App Boilerplate Code
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    RPSAppWindow = RPS()
+    RPSAppWindow.show()
+    sys.exit(app.exec_())
